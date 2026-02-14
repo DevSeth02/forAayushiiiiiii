@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--pink1:#ffd1dc;--pink2:#ff6f91;--red1:#ff4d6d;--red2:#ff1744}
+*{box-sizing:border-box;margin:0;padding:0}
+body{height:100vh;font-family:'Poppins',sans-serif;background:linear-gradient(to bottom,var(--pink1),var(--pink2));display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center;color:#fff}
+.container{position:relative;z-index:2;max-width:500px;padding:20px}
+h1{font-family:'Dancing Script',cursive;font-size:clamp(2.2rem,6vw,3rem);margin:15px 0}
+.subtitle{font-style:italic;opacity:.95}
+.closing{margin-top:20px;font-weight:300}
+.bear{font-size:70px;animation:bounce 1.2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.buttons{margin-top:30px;display:flex;justify-content:center;gap:40px;align-items:center}
+button{border:none;cursor:pointer;font-family:'Poppins';transition:.25s}
+#yesBtn{padding:14px 36px;border-radius:999px;background:linear-gradient(45deg,var(--red1),var(--red2));color:#fff;font-size:1.2rem;box-shadow:0 0 0 rgba(255,0,0,.6)}
+#yesBtn:hover{box-shadow:0 0 18px rgba(255,0,0,.8);transform:scale(1.08)}
+#noBtn{padding:10px 22px;border-radius:999px;background:#fff;color:#ff1744;border:2px solid #ff1744;font-size:1rem;position:relative}
+.hearts span{position:fixed;bottom:-20px;font-size:20px;opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(0) scale(.8);opacity:0}10%{opacity:1}100%{transform:translateY(-120vh) scale(1.2);opacity:0}}
+.celebrate{position:fixed;inset:0;background:linear-gradient(to bottom,#ff9eb5,#ff4d6d);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:10;visibility:hidden}
+.yay{font-size:clamp(3rem,8vw,5rem);animation:pulse 1s infinite;font-family:'Dancing Script'}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.spin{font-size:70px;animation:spin 2s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.confetti{position:fixed;width:8px;height:12px;opacity:.9;animation:fall 3s linear forwards}
+@keyframes fall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<div class="container" id="questionBox">
+<div class="bear">🐹</div>
+<h1>Will You Be My Valentine, <span id="name">Aayushi</span>?</h1>
+<div class="subtitle">Be My Bhonduuuuuuu</div>
+<div class="closing">Every love story is beautiful, but ours is my favourite</div>
+<div class="buttons">
+<button id="yesBtn">Yes</button>
+<button id="noBtn">No</button>
+</div>
+</div>
+<div class="celebrate" id="celebrate">
+<div class="yay">Yayyyy!!</div>
+<div class="spin">💖</div>
+<div>Good Girl 😙 , Muje Pata Tha You Wouldn't Say No 🥹</div>
+<div>I Love You Princess 👸❤️💕</div>
+</div>
+<script>
+const heartsContainer=document.getElementById('hearts');
+let heartIntervals=[];
+function createHeart(){
+ const span=document.createElement('span');
+ span.textContent='💗';
+ const size=Math.random()*20+16;
+ span.style.fontSize=size+'px';
+ span.style.left=Math.random()*100+'vw';
+ const dur=Math.random()*6+5;
+ span.style.animationDuration=dur+'s';
+ heartsContainer.appendChild(span);
+ setTimeout(()=>span.remove(),dur*1000);
+}
+for(let i=0;i<15;i++){heartIntervals.push(setInterval(createHeart,800+Math.random()*800));}
+
+const noBtn=document.getElementById('noBtn');
+const yesBtn=document.getElementById('yesBtn');
+const messages=["Nope, not an option!","Try again!","You sure about that?","Not happening!","Think again!"];
+let msgIndex=0;
+function moveNo(){
+ const yesRect=yesBtn.getBoundingClientRect();
+ const pad=80;
+ let x,y,tries=0;
+ do{
+  x=Math.random()*(window.innerWidth-noBtn.offsetWidth);
+  y=Math.random()*(window.innerHeight-noBtn.offsetHeight);
+  tries++;
+ }while(x>yesRect.left-pad && x<yesRect.right+pad && y>yesRect.top-pad && y<yesRect.bottom+pad && tries<50);
+ noBtn.style.position='fixed';
+ noBtn.style.left=x+'px';
+ noBtn.style.top=y+'px';
+ noBtn.textContent=messages[msgIndex++%messages.length];
+}
+noBtn.addEventListener('click',moveNo);
+noBtn.addEventListener('touchstart',e=>{e.preventDefault();moveNo();});
+
+yesBtn.onclick=()=>{
+ document.getElementById('questionBox').style.display='none';
+ noBtn.style.display='none';
+ heartIntervals.forEach(i=>clearInterval(i));
+ document.querySelectorAll('.hearts span').forEach(h=>h.remove());
+ const c=document.getElementById('celebrate');
+ c.style.visibility='visible';
+ for(let i=0;i<120;i++){
+  const conf=document.createElement('div');
+  conf.className='confetti';
+  conf.style.left=Math.random()*100+'vw';
+  conf.style.background=`hsl(${Math.random()*360},80%,60%)`;
+  conf.style.animationDuration=(Math.random()*2+2)+'s';
+  document.body.appendChild(conf);
+  setTimeout(()=>conf.remove(),4000);
+ }
+};
+</script>
+</body>
+</html>
